@@ -1,0 +1,29 @@
+import { Application, Context } from 'https://deno.land/x/abc@v1.2.0/mod.ts';
+
+import { create_book, delete_book, get_all_books, get_book } from './controllers/bookController.ts';
+
+const app = new Application();
+
+//static files
+app.static("/", "./public");
+
+//routes
+app.get("/", async (ctx: Context) => {
+  await ctx.file("./public/index.html");
+});
+
+app
+  .get(
+    "/books",
+    // (ctx: Context) => {
+    /* response example*/
+    // ctx.string("all books");
+    // ctx.json([{ title: "blah" }, { title: "blahblah" }], 200);}
+    get_all_books,
+  )
+  .get("/books/:id", get_book)
+  .post("/books", create_book)
+  .delete("/books/:id", delete_book);
+
+//listen to port
+app.start({ port: 3000 });
