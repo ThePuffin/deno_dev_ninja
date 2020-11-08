@@ -1,20 +1,20 @@
 import { v4 } from 'https://deno.land/std@0.76.0/uuid/mod.ts';
-import { Context } from 'https://deno.land/x/abc@v1.2.0/mod.ts';
+import { Context, HandlerFunc } from 'https://deno.land/x/abc@v1.2.0/mod.ts';
 
 import { Book } from '../models/bookModel.ts';
 
 let books: Book[] = [
   {
-    id: "string",
+    id: "1",
     title: "string",
     author: "string",
-    pages: 1,
+    pages: 100,
   },
   {
-    id: "string 2",
+    id: "2",
     title: "string 2",
     author: "string 2",
-    pages: 2,
+    pages: 200,
   },
 ];
 
@@ -31,12 +31,12 @@ export const get_book = (ctx: Context) => {
   return ctx.string("no book found with that id", 400);
 };
 
-export const create_book = async (ctx: Context) => {
-  const { title, author, pages } = await ctx.queryParams;
-  const numberPages = Number(pages);
+export const create_book: HandlerFunc = async (ctx: Context) => {
+  const { title, author, pages } = await ctx.body as Book;
+
   //validate data & type of the data
   const id = v4.generate();
-  const book: Book = { id, title, author, pages: numberPages };
+  const book: Book = { id, title, author, pages };
   books = [...books, book];
   return ctx.json(book, 201);
 };
